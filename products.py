@@ -8,6 +8,7 @@ class Product:
 		self.price = price
 		self.quantity = quantity
 		self.active = True
+		self.promotion = None
 
 	def get_quantity(self):
 		"""Returns the current quantity of the product."""
@@ -53,11 +54,19 @@ class NonStockedProduct(Product):
 
 	def show(self):
 		"""Returns a string representation of the non-stocked product."""
+		if self.promotion:
+			return f"{self.name}, Price: {self.price}, Non-stocked product, Promotion: {self.promotion.name}"
 		return f"{self.name}, Price: {self.price}, Non-stocked product"
 
 	def buy(self, quantity):
 		"""Buy a non-stocked product (no quantity tracking)."""
-		return self.price * quantity
+		total_price = self.price * quantity
+		
+		# Apply promotion if exists
+		if self.promotion:
+			total_price = self.promotion.apply_promotion(self, quantity)
+			
+		return total_price
 
 class LimitedProduct(Product):
 	"""Represents a product that can only be purchased in limited quantity per order."""
