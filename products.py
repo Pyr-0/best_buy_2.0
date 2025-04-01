@@ -43,3 +43,36 @@ class Product:
 		if self.quantity == 0:
 			self.deactivate()
 		return self.price * quantity
+
+class NonStockedProduct(Product):
+	"""Represents a non-physical product that doesn't have stock."""
+	def __init__(self, name:str, price:float):
+		"""Initialize a non-stocked product with quantity fixed at 0."""
+		super().__init__(name, price, quantity=0)
+		self.active = True
+
+	def show(self):
+		"""Returns a string representation of the non-stocked product."""
+		return f"{self.name}, Price: {self.price}, Non-stocked product"
+
+	def buy(self, quantity):
+		"""Buy a non-stocked product (no quantity tracking)."""
+		return self.price * quantity
+
+class LimitedProduct(Product):
+	"""Represents a product that can only be purchased in limited quantity per order."""
+	def __init__(self, name:str, price:float, quantity:int, maximum:int):
+		"""Initialize a limited product with a maximum purchase quantity."""
+		super().__init__(name, price, quantity)
+		self.maximum = maximum
+		
+	def show(self):
+		"""Returns a string representation of the limited product."""
+		return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}, Maximum per order: {self.maximum}"
+		
+	def buy(self, quantity):
+		"""Buy a limited product with quantity restrictions."""
+		if quantity > self.maximum:
+			raise ValueError(f"Cannot buy more than {self.maximum} units in a single order")
+			
+		return super().buy(quantity)
