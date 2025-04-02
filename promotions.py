@@ -11,24 +11,43 @@ class Promotion(ABC):
 		pass
 
 class PercentDiscount(Promotion):
-	def __init__(self, name: str, percent: float):
-		super().__init__(name)
-		self.percent = percent
+    """Applies a percentage discount to a product."""
+    def __init__(self, name, percent):
+        super().__init__(name)
+        if not 0 <= percent <= 100:
+            raise ValueError("Percent discount must be between 0 and 100")
+        self.percent = percent
+        
+    def apply_promotion(self, product, quantity):
+        """Apply a percentage discount to the total price."""
+        original_price = product.price * quantity
+        discount = original_price * (self.percent / 100)
+        return original_price - discount
 
-def apply_promotion(self, product, quantity) -> float:
-	"""Applies a percentage discount to the total price."""
-	discount = (self.percent / 100) * (product.price * quantity)
-	return (product.price * quantity) - discount
 
 class SecondHalfPrice(Promotion):
-	def apply_promotion(self, product, quantity) -> float:
-		"""Applies a second item at half price discount."""
-		full_price_items = quantity // 2 + quantity % 2  # Every second item is half price
-		half_price_items = quantity // 2
-		return (full_price_items * product.price) + (half_price_items * product.price * 0.5)
-	
+    """Every second item costs half price."""
+    def apply_promotion(self, product, quantity):
+        """Apply second item at half price promotion."""
+        # Calculate how many full-price and half-price items
+        full_price_count = (quantity + 1) // 2  # Ceiling division for odd quantities
+        half_price_count = quantity // 2        # Floor division
+        
+        # Calculate total price
+        total = (full_price_count * product.price) + (half_price_count * product.price * 0.5)
+        return total
+
+
 class ThirdOneFree(Promotion):
-	def apply_promotion(self, product, quantity) -> float:
-		"""Applies 'Buy 2, Get 1 Free' discount."""
-		payable_items = quantity - (quantity // 3)  # Every third item is free
-		return payable_items * product.price
+    """Buy 2, get 1 free promotion."""
+    def apply_promotion(self, product, quantity):
+        """Apply buy 2, get 1 free promotion."""
+        # Calculate how many free items
+        free_items = quantity // 3
+        
+        # Calculate paid items
+        paid_items = quantity - free_items
+        
+        # Calculate total price
+        total = paid_items * product.price
+        return total 
