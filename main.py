@@ -59,6 +59,10 @@ def main(best_buy):
 							if amount > selected_product.get_quantity():
 								print(f"Not enough stock available. Max available: {selected_product.get_quantity()}")
 								continue
+							# Check if this limited product is already in the shopping list
+							if any(item[0] == selected_product for item in shopping_list):
+								print("This limited product can only be added once to the order.")
+								continue
 						else:
 							# Regular products check quantity
 							if amount > selected_product.get_quantity():
